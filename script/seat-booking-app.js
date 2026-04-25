@@ -57,11 +57,11 @@ class SeatBookingApp {
         // populate container with existing sectors
         sectors.forEach((sector) => {
             const listElement = document.createElement('li');
-            const name = document.createElement('span')
+            const name = document.createElement('span');
             name.textContent = sector.sector;
-            const price = document.createElement('input')
+            const price = document.createElement('input');
             price.setAttribute('id', `price-${sector.sector}`);
-            price.value = sector.priceMultiplier
+            price.value = sector.priceMultiplier;
             listElement.appendChild(name);
             listElement.appendChild(price);
             container.appendChild(listElement);
@@ -212,19 +212,19 @@ class SeatBookingApp {
             totalPrice += seatPrice;
 
             // render list object for this seat
-            const listItem = document.createElement(`li`)
-            const listItemId = document.createElement(`span`)
-            listItemId.textContent = seat.id
-            const listItemPrice = document.createElement(`span`)
-            listItemPrice.textContent = `$${seatPrice}`
-            container.appendChild(listItem)
-            listItem.appendChild(listItemId)
-            listItem.appendChild(listItemPrice)
+            const listItem = document.createElement(`li`);
+            const listItemId = document.createElement(`span`);
+            listItemId.textContent = seat.id;
+            const listItemPrice = document.createElement(`span`);
+            listItemPrice.textContent = `$${seatPrice}`;
+            container.appendChild(listItem);
+            listItem.appendChild(listItemId);
+            listItem.appendChild(listItemPrice);
             // render updated total price element
-            const totalPriceElement = document.createElement(`span`)
-            totalPriceElement.textContent = `Total price: $${parseFloat(totalPrice.toFixed(2))}`
+            const totalPriceElement = document.createElement(`span`);
+            totalPriceElement.textContent = `Total price: $${parseFloat(totalPrice.toFixed(2))}`;
             totalPriceContainer.innerHTML = '';
-            totalPriceContainer.appendChild(totalPriceElement)
+            totalPriceContainer.appendChild(totalPriceElement);
         })
     }
     /* disabled until there is a way of creating sectors by user
@@ -250,7 +250,7 @@ class SeatBookingApp {
         } else {
             servicesJSON.forEach((service) => {
                 
-                const serviceInstance = (new Service(service._name, service._price))
+                const serviceInstance = (new Service(service._name, service._price));
                 serviceInstance.setBookedSeatsArray(service._seatsBooked);
                 this.addService(serviceInstance);
             });
@@ -519,7 +519,7 @@ seatElements.forEach((seat) => {
                 // record the select seats
                 showingRoom1.addAuditLog('SELECT_SEAT', { 
                     seatId: e.target.id, 
-                    serviceId: currentService.getId() 
+                    serviceId: currentService.getId()
                 });
 
                 currentService.addReservedSeat(e.target);
@@ -559,7 +559,7 @@ serviceAddBtn.addEventListener('click', (e) => {
     const inputServiceName = document.querySelector(`#service-name`).value;
     const inputServicePrice = document.querySelector(`#service-price`).value;
     // create new Service instance
-    const newService = new Service(inputServiceName, inputServicePrice)
+    const newService = new Service(inputServiceName, inputServicePrice);
     // get current service
     const currentService = showingRoom1.getCurrentService();
 
@@ -580,7 +580,7 @@ serviceAddBtn.addEventListener('click', (e) => {
         newPrice: inputServicePrice 
     });
 
-    console.log(`"${inputServiceName}" has been successfully added`)
+    console.log(`"${inputServiceName}" has been successfully added`);
     localStorageSpace();
     
     // Unblock after "adding new"
@@ -631,7 +631,7 @@ serviceDeleteBtn.addEventListener('click', () => {
     showingRoom1.renderServicesList()
     showingRoom1.renderCurrentServiceData();
 
-    console.log(`"${inputServiceName}" has been successfully removed`)
+    console.log(`"${inputServiceName}" has been successfully removed`);
     localStorageSpace();
 
     // block after "delete"
@@ -639,7 +639,7 @@ serviceDeleteBtn.addEventListener('click', () => {
 })
 
 // get `book seats` button element
-const bookSeatsBtn = document.querySelector(`#book-seats-btn`)
+const bookSeatsBtn = document.querySelector(`#book-seats-btn`);
 
 bookSeatsBtn.addEventListener('click', () => {
     const currentService = showingRoom1.getCurrentService();
