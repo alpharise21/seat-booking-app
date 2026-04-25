@@ -453,3 +453,84 @@ bookSeatsBtn.addEventListener('click', debounce(() => {
 
     bookSeatsBtn.disabled = false;
 }, 300));
+
+const translations = {
+  en: {
+    languageLabel: "Language:",
+    servicesListLabel: "Service list:",
+    movieTitleLabel: "Movie title:",
+    priceBaseLabel: "Price base:",
+    addNew: "Add new",
+    saveChanges: "Save changes",
+    deleteText: "Delete",
+    editSectorPrices: "Edit sectors' prices",
+    sectorMultipliersLabel: "Price multipliers for each sector:",
+    saveText: "Save",
+    ticketsLabel: "Tickets:",
+    buyText: "Buy",
+    screenText: "Screen"
+  },
+  zh: {
+    languageLabel: "语言：",
+    servicesListLabel: "服务列表：",
+    movieTitleLabel: "电影标题：",
+    priceBaseLabel: "基础票价：",
+    addNew: "新增",
+    saveChanges: "保存修改",
+    deleteText: "删除",
+    editSectorPrices: "编辑分区价格",
+    sectorMultipliersLabel: "各分区票价系数：",
+    saveText: "保存",
+    ticketsLabel: "票券：",
+    buyText: "购买",
+    screenText: "屏幕"
+  }
+};
+
+function applyLanguage(lang) {
+  const t = translations[lang];
+
+  const languageLabel = document.getElementById("language-label");
+  const servicesListLabel = document.getElementById("services-list-label");
+  const movieTitleLabel = document.getElementById("movie-title-label");
+  const priceBaseLabel = document.getElementById("price-base-label");
+  const serviceAddBtn = document.getElementById("service-add-btn");
+  const serviceUpdateBtn = document.getElementById("service-update-btn");
+  const serviceDeleteBtn = document.getElementById("service-delete-btn");
+  const sectorsPriceBtn = document.getElementById("sectors-price-btn");
+  const sectorMultipliersLabel = document.getElementById("sector-multipliers-label");
+  const sectorsSaveBtn = document.getElementById("sectors-save-btn");
+  const ticketsLabel = document.getElementById("tickets-label");
+  const bookSeatsBtn = document.getElementById("book-seats-btn");
+  const screen = document.getElementById("screen");
+
+  if (languageLabel) languageLabel.textContent = t.languageLabel;
+  if (servicesListLabel) servicesListLabel.textContent = t.servicesListLabel;
+  if (movieTitleLabel) movieTitleLabel.textContent = t.movieTitleLabel;
+  if (priceBaseLabel) priceBaseLabel.textContent = t.priceBaseLabel;
+  if (serviceAddBtn) serviceAddBtn.textContent = t.addNew;
+  if (serviceUpdateBtn) serviceUpdateBtn.textContent = t.saveChanges;
+  if (serviceDeleteBtn) serviceDeleteBtn.textContent = t.deleteText;
+  if (sectorsPriceBtn) sectorsPriceBtn.textContent = t.editSectorPrices;
+  if (sectorMultipliersLabel) sectorMultipliersLabel.textContent = t.sectorMultipliersLabel;
+  if (sectorsSaveBtn) sectorsSaveBtn.textContent = t.saveText;
+  if (ticketsLabel) ticketsLabel.textContent = t.ticketsLabel;
+  if (bookSeatsBtn) bookSeatsBtn.textContent = t.buyText;
+  if (screen) screen.textContent = t.screenText;
+
+  localStorage.setItem("selectedLanguage", lang);
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+  const languageSelect = document.getElementById("language-select");
+  const savedLanguage = localStorage.getItem("selectedLanguage") || "en";
+
+  if (languageSelect) {
+    languageSelect.value = savedLanguage;
+    applyLanguage(savedLanguage);
+
+    languageSelect.addEventListener("change", (event) => {
+      applyLanguage(event.target.value);
+    });
+  }
+});
