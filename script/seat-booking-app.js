@@ -7,9 +7,22 @@ class SeatBookingApp {
         this._priceMultipliers = [];
         this._services = [];
         this._currentServiceId = '';
+        this._logs = [];
     }
     getName() {
         return this._name;
+    }
+
+    // new method to audit
+    addAuditLog(action, details) {
+        const logEntry = {
+            timestamp: new Date().toISOString(),
+           action: action,
+           details: details
+        };
+        this._logs.push(logEntry);
+        localStorage.setItem(`sba-logs-${this._name}`, JSON.stringify(this._logs));
+        console.table(logEntry); 
     }
     addSector(sector) {
         this._sectors.push(sector);
@@ -47,7 +60,7 @@ class SeatBookingApp {
             const name = document.createElement('span')
             name.textContent = sector.sector;
             const price = document.createElement('input')
-            price.setAttribute('id', `price-${sector}`)
+            price.setAttribute('id', `price-${sector.sector}`);
             price.value = sector.priceMultiplier
             listElement.appendChild(name);
             listElement.appendChild(price);
@@ -105,6 +118,43 @@ class SeatBookingApp {
             inputServicePrice.value = currentService.getPrice();
         }
     }
+
+    // adding UI blocking logic
+    updateBlockingLayer() {
+        const blocker = document.querySelector('#app-blocker');
+        const screeningRoom = document.querySelector('#screening-room-1');
+        const orderSection = document.querySelector('#order');
+
+        // Check if the service array is empty
+        if (this._services.length === 0) {
+            // empty, then add the blocking layer
+            if (blocker) blocker.style.display = 'flex';
+            
+            // Disable the right seat area and the order area
+            if (screeningRoom) {
+                screeningRoom.style.pointerEvents = 'none';
+                screeningRoom.style.opacity = '0.4';
+                orderSection.style.pointerEvents = 'none'; //  lock the "Buy" button
+            }
+            if (orderSection) {
+                screeningRoom.style.pointerEvents = 'none';
+                orderSection.style.opacity = '0.4';
+            }
+        } else {
+            // have data, then remove the blocking layer
+            if (blocker) blocker.style.display = 'none';
+            
+            if (screeningRoom) {
+                screeningRoom.style.pointerEvents = 'auto';
+                screeningRoom.style.opacity = '1';
+            }
+            if (orderSection) {
+            orderSection.style.opacity = '1';
+            orderSection.style.pointerEvents = 'auto';
+        }
+        }
+    }
+
     cacheServices() {
         // check if localStorage is available
         if(typeof(Storage) !== "undefined") {
@@ -188,24 +238,26 @@ class SeatBookingApp {
             window.alert(`Access to localStorage in this browser is not available. Data cannot be saved.`);
             throw Error(`Access to localStorage in this browser is not available. Data cannot be saved.`);
         }
-    }
-    fetchSectors() {
-        // fetch data from localStorage
-        const sectorsJSON = JSON.parse(localStorage.getItem(`sba-sectors-${this.getName()}`));
+    }*/
+   
+    fetchServices() {
+        
+        const servicesJSON = JSON.parse(localStorage.getItem(`sba-services-${this.getName()}`));
 
-        if(!sectorsJSON) {
-            // if there's no data, notify user
-            console.log(`There are no sectors in localStorage`)
+        if(!servicesJSON || servicesJSON.length === 0) {
+            
+            console.log(`Let's add some services. Use the form on the left.`);
         } else {
-            sectorsJSON.forEach((sector) => {
-                // create Service instances and add to app's array
-                const sectorInstance = (new Sector(sector._id, sector._priceMultiplier))
-                // serviceInstance.setBookedSeatsArray(sector._seatsBooked);
-                this.addSector(sectorInstance)
-            })
+            servicesJSON.forEach((service) => {
+                
+                const serviceInstance = (new Service(service._name, service._price))
+                serviceInstance.setBookedSeatsArray(service._seatsBooked);
+                this.addService(serviceInstance);
+            });
         }
+        
+        this.updateBlockingLayer();
     }
-    */
 };
 
 class Service {
@@ -462,13 +514,25 @@ seatElements.forEach((seat) => {
             e.target.classList.toggle('seat--reserved');
             // get current service
             const currentService = showingRoom1.getCurrentService()
+            
             if(seat.classList.contains(`seat--reserved`)) {
-                // save seat ID in array
+                // record the select seats
+                showingRoom1.addAuditLog('SELECT_SEAT', { 
+                    seatId: e.target.id, 
+                    serviceId: currentService.getId() 
+                });
+
                 currentService.addReservedSeat(e.target);
-                showingRoom1.updateOrderDetails()
+                showingRoom1.updateOrderDetails();
             } else {
-                // remove seat ID from array
+                // cancel selection
+                showingRoom1.addAuditLog('DESELECT_SEAT', { 
+                    seatId: e.target.id, 
+                    serviceId: currentService.getId() 
+                }); 
+
                 currentService.removeReservedSeat(e.target.id);
+                showingRoom1.updateOrderDetails(); 
             }
 
         };
@@ -496,14 +560,31 @@ serviceAddBtn.addEventListener('click', (e) => {
     const inputServicePrice = document.querySelector(`#service-price`).value;
     // create new Service instance
     const newService = new Service(inputServiceName, inputServicePrice)
+    // get current service
+    const currentService = showingRoom1.getCurrentService();
 
     showingRoom1.addService(newService);
     showingRoom1.cacheServices();
     showingRoom1.renderServicesList();
     showingRoom1.renderCurrentServiceData();
 
+    // Record audit logs when add movie
+    showingRoom1.addAuditLog('ADD_MOVIE', { 
+        name: inputServiceName, 
+        price: inputServicePrice 
+    });
+    // record when change name, price
+    showingRoom1.addAuditLog('UPDATE_MOVIE', { 
+         
+        newName: inputServiceName, 
+        newPrice: inputServicePrice 
+    });
+
     console.log(`"${inputServiceName}" has been successfully added`)
     localStorageSpace();
+    
+    // Unblock after "adding new"
+    showingRoom1.updateBlockingLayer();
 })
 
 // get `update Service` button element
@@ -540,21 +621,41 @@ serviceDeleteBtn.addEventListener('click', () => {
     // remove current service from array
     servicesArray.splice(indexToDelete, 1)
 
+    // Record after delet
+    showingRoom1.addAuditLog('DELETE_MOVIE', { 
+        id: currentServiceId,
+        name: inputServiceName 
+    });
+
     showingRoom1.cacheServices();
     showingRoom1.renderServicesList()
     showingRoom1.renderCurrentServiceData();
 
     console.log(`"${inputServiceName}" has been successfully removed`)
     localStorageSpace();
+
+    // block after "delete"
+    showingRoom1.updateBlockingLayer();
 })
 
 // get `book seats` button element
 const bookSeatsBtn = document.querySelector(`#book-seats-btn`)
-bookSeatsBtn.addEventListener('click', () => {
 
-    // get current service
+bookSeatsBtn.addEventListener('click', () => {
     const currentService = showingRoom1.getCurrentService();
 
-    currentService.bookSeats();
-    showingRoom1.cacheServices();
-})
+    if (currentService) {
+        //count the chosen seats
+        const count = currentService.getReservedSeats().length;
+
+        currentService.bookSeats();
+
+        //in record, use the count, show the details
+        showingRoom1.addAuditLog('BOOK_TICKETS', { 
+            serviceId: currentService.getId(), 
+            seatsCount: count 
+        });
+
+        showingRoom1.cacheServices();
+    }
+});
