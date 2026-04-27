@@ -42,6 +42,7 @@ class SeatBookingApp {
     getPriceMultipliersArray() {
         return this._priceMultipliers;
     }
+
     renderSectorsList() {
         const sectors = this.getPriceMultipliersArray();
         const container = document.querySelector(`#sectors-list`);
@@ -50,14 +51,26 @@ class SeatBookingApp {
             const listElement = document.createElement('li');
             const name = document.createElement('span');
             name.textContent = sector.sector;
-            const price = document.createElement('input');
-            price.setAttribute('id', `price-${sector.sector}`);
+
+            const price = document.createElement('input')
+            // fix 1
+            const uniqueId = `price-${sector.sector}`;
+            price.setAttribute('id', uniqueId);
+            
+            // fix 2
+            price.setAttribute('aria-label', `Price multiplier for sector ${sector.sector}`);
+            
+            price.type = 'number'; 
+            price.step = '0.1';
             price.value = sector.priceMultiplier;
+
             listElement.appendChild(name);
             listElement.appendChild(price);
             container.appendChild(listElement);
         });
     }
+    // ----------------------
+
     addService(service) {
         this._services.push(service);
     }
@@ -314,6 +327,7 @@ function clearReservedUI() {
 
 // INITIALIZE APP -------------------------------------------------------------
 const showingRoom1 = initializeApp(`showingRoom1`);
+const initializeApp = (instanceName) => new SeatBookingApp(instanceName);
 showingRoom1.addSector(sectorA1);
 showingRoom1.addSector(sectorA2);
 showingRoom1.addSector(sectorB1);
@@ -325,11 +339,11 @@ showingRoom1.fetchServices();
 showingRoom1.renderSectorsList();
 showingRoom1.renderServicesList();
 showingRoom1.renderCurrentServiceData();
-renderBookedSeats();
 
 // GET ELEMENTS FROM DOM ------------------------------------------------------
 const seatElements = document.querySelectorAll('.seat');
 seatElements.forEach((seat) => {
+    // Seat hover tooltip (from main)
     seat.addEventListener('mouseover', (e) => {
         const seatInfo = document.createElement('div');
         seatInfo.classList.add(`seat__info`);
@@ -340,6 +354,8 @@ seatElements.forEach((seat) => {
         const info = document.querySelector(`.seat__info`);
         if (info) info.remove();
     });
+
+    // Seat click event (merged logic)
     seat.addEventListener('click', (e) => {
         if (!seat.classList.contains(`seat--booked`)) {
             e.target.classList.toggle('seat--reserved');
@@ -350,6 +366,7 @@ seatElements.forEach((seat) => {
                 } else {
                     currentService.removeReservedSeat(e.target.id);
                 }
+                // Update order details (placed outside to ensure update on both add and remove)
                 showingRoom1.updateOrderDetails();
             }
         }
@@ -360,8 +377,8 @@ seatElements.forEach((seat) => {
 const dropdownElement = document.querySelector(`#services-list`);
 dropdownElement.addEventListener('change', (e) => {
     showingRoom1.setCurrentServiceId(e.target.value);
-    clearReservedUI();
-    renderBookedSeats();
+    clearReservedUI(); // From main
+    renderBookedSeats(); // From main
     showingRoom1.renderCurrentServiceData();
 });
 
@@ -371,13 +388,16 @@ serviceAddBtn.addEventListener('click', debounce((e) => {
     if (serviceAddBtn.disabled) return;
     serviceAddBtn.disabled = true;
 
+    // Get input values and add new service (merged variable names and logic)
     const inputServiceName = document.querySelector(`#service-name`).value;
     const inputServicePrice = document.querySelector(`#service-price`).value;
     const newService = new Service(inputServiceName, inputServicePrice);
+    
     showingRoom1.addService(newService);
     showingRoom1.cacheServices();
     showingRoom1.renderServicesList();
     
+    // UI update and state preservation (from main)
     const dropdown = document.querySelector(`#services-list`);
     dropdown.value = newService.getId();
     showingRoom1.setCurrentServiceId(newService.getId());
@@ -445,6 +465,8 @@ bookSeatsBtn.addEventListener('click', debounce(() => {
     if (currentService) {
         currentService.bookSeats();
         showingRoom1.cacheServices();
+        
+        // Clear reserved UI state after booking (from main)
         document.querySelectorAll('.seat--reserved').forEach(seat => {
             seat.classList.remove('seat--reserved');
         });
@@ -454,6 +476,7 @@ bookSeatsBtn.addEventListener('click', debounce(() => {
     bookSeatsBtn.disabled = false;
 }, 300));
 
+// TRANSLATIONS & LANGUAGE SUPPORT ---------------------------------------------
 const translations = {
   en: {
     languageLabel: "Language:",
