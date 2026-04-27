@@ -8,23 +8,28 @@
     <meta name="description" content="Interactive movie seat booking application. Choose your favorite movie, select seats in different sectors, and manage your ticket prices efficiently.">
     
     <link rel="stylesheet" href="style/style.css">
+<meta name="description" content="A seat booking web application with bilingual support for managing services, pricing, and seat reservations.">
     <title>Project - Seat Booking</title>
 </head>
 <body>
     <main id="seat-booking-app">
         <div id="settings" class="settings">
             <div class="services-list">
-                <label for="services-list">Select a Movie:</label>
-                <select name="services-list" id="services-list"></select>
+                <div class="language-switcher">
+                    <label for="language-select" id="language-label">Language:</label>
+                    <select id="language-select">
+                        <option value="en">English</option>
+                        <option value="zh">中文</option>
+                    </select>
+                </div>
                 
-                <h3>Movie title:</h3>
-                <label for="service-name" class="visually-hidden">Movie Title Input</label>
+                <label for="services-list" id="services-list-label" class="form-label">Service list:</label>
+                <select name="services-list" id="services-list"></select>
+                <label for="service-name" id="movie-title-label" class="form-label">Movie title:</label>
                 <input type="text" name="service-name" id="service-name">
                 
-                <h3>Price base:</h3>
-                <label for="service-price" class="visually-hidden">Price Base Input</label>
+                <label for="service-price" id="price-base-label" class="form-label">Price base:</label>
                 <input type="number" name="service-price" id="service-price" min="0" max="100" step="0.01">
-                
                 <div class="services-list__btns">
                     <button id="service-add-btn" class="btn">Add new</button>
                     <button id="service-update-btn" class="btn">Save changes</button>
@@ -32,20 +37,21 @@
                 </div>
             </div>
 
-            <section class="sectors" aria-labelledby="sectors-heading">
-                <h3 id="sectors-heading">Price multipliers for each sector:</h3>
+            <section class="sectors" aria-labelledby="sector-multipliers-label">
+                <h3 id="sector-multipliers-label">Price multipliers for each sector:</h3>
                 <button id="sectors-price-btn" class="btn">Edit sectors' prices</button>
                 <ul id="sectors-list" class="sectors__list"></ul>
                 <button id="sectors-save-btn" class="btn">Save</button>
             </section>
 
-            <section id="order" class="order" aria-labelledby="order-heading">
+            <section id="order" class="order" aria-labelledby="tickets-label">
                 <div class="order__header">
-                    <h2 id="order-heading">Tickets:</h2>
-                </div>
+                    <h2 id="tickets-label">Tickets:</h2>
+
                 <div class="order__main">
                     <ul id="order-details"></ul>
                 </div>
+
                 <div id="order-footer" class="order__footer">
                     <span id="order-total-price"></span>
                     <button id="book-seats-btn" class="btn">Buy</button>
@@ -69,6 +75,8 @@
         <button id="accept-cookies" class="btn" style="background: #80e5ff; border: none; padding: 0.5rem 1rem; cursor: pointer;">Accept</button>
     </aside>
 
+        </div>
+    </main>
     <script src="script/seat-booking-app.js"></script>
     <script>
         document.getElementById('accept-cookies')?.addEventListener('click', function() {
