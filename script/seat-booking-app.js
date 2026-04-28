@@ -453,7 +453,7 @@ if (currentService) {
     }
     
     showingRoom1.updateOrderDetails();
-}
+
             }
         }
     });
