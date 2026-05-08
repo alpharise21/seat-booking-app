@@ -1,27 +1,73 @@
-**This project has not been finished yet**
+# Seat-booking-app-JavaScript
 
-# Seat-Booking App
-This is a project of a Seat Booking App implemented using vanilla `JavaScript`. It can be easily adjusted to be used in any project that needs to have a simple **seat-reservation system**. Please note that this project is not finished yet.
+[![codecov](https://codecov.io/github/ideal0406/cpt-304-group-project-test/graph/badge.svg?token=qjBVklgYXo)](https://app.codecov.io/github/ideal0406/cpt-304-group-project-test/tree/main)
+[![Deploy Status](https://img.shields.io/badge/deploy-live-brightgreen?style=flat&logo=render)](https://seat-booking-app-0hle.onrender.com)
 
-The app uses `ES6` classes and methods, and also uses modern browser APIs such as `querySelector`, `createElement`, and `localStorage`. It also uses the `crypto` API to generate random ids for services and sectors.
+This project is for the CPT304 group assignment (Group 70).
 
-## How it works
-The app has three main classes: `SeatBookingApp`, `Service`, and `Sector`.
+Welcome to the Seat Booking App! This project is based on the Seat Booking App created by the original author Damian Zienke. It has fixed the defects and added many new features. This app has implemented a cinema seat reservation system. You can add or delete movies and ticket prices independently through this app, and select seats on the seating map to make reservations and purchases.
 
-1. The SeatBookingApp class is responsible for creating instances of Service and Sector, rendering services to the DOM, and caching data to local storage. 
-It provides methods to add sectors and services to the app, get the list of services, and set the current service. It renders the services list to the DOM and caches the services to local storage. 
+## Demo
 
-2. The Service class represents a service with a name, price, and available seats. It provides methods to book seats, add reserved seats, remove reserved seats, and mark seats as booked. This class provides methods to add and remove reserved seats, calculate their prices and book them.
+You can check out the live demo of the Seat Booking App here.
+**Online Demo of Project :**
 
-3. The Sector class represents a sector with a unique id, a price multiplier, and a list of seats in each row. It generates unique seat ids and provides a method to render the sectors to the DOM.
+[Link to Seat Booking App](https://seat-booking-app-0hle.onrender.com)
 
-## Bugs
-* reserved seats and order details list should be cleared after adding, deleting or modifying current service and after changing services
-* when localStorage is empty, everything should be blocked until a service is created and cached in localStorage
+## Defect Repairs
 
-## Things to be implemented
-* **prompt user to create first service**
-* **add input validation and better error handling**
-* enable user to update price multipliers for each sector
-* enable user to create sectors
-    * storing mechanism for sectors is ready (disabled for now)
+- Cache Blocking: By implementing non-null checks and defensive programming, logical barriers are added to ensure that business operations can only be executed after initialization is complete, thereby avoiding exceptions caused by null data.
+
+- data consistency: Add the "clearReservedUI" method, add null pointer verification, and synchronize the update of the order when a seat is cancelled.
+
+- concurrent competition: Use debouncing processing, add button state locking, and ensure the uniqueness of seat IDs
+
+- Accessibility :restructuring the index.html. Successfully linked elements to their respective form ids (e.g., movie selection dropdown, price inputs) using the for attribute, significantly improving the Accessibility score.
+
+## Function enhancement
+
+- Add operation logs: Implement a standardized audit log system that records timestamps, operation identifiers, and contextual information, enabling all transactions to be traceable and auditable.
+
+- Add i18n: add a bilingual language switch (English and Chinese) and improved semantic accessibility
+
+- Add Cookie Banner：Developed and implemented a responsive Cookie Banner on the landing page to seek user consent for utilizing localStorage to save seat bookings.
+
+- Add Privacy Policy Page: Created a standalone privacy.html page that explains data handling practices, ensuring the project adheres to GDPR and general privacy compliance standards.
+
+## Usage
+
+1. Clone the repository or download the ZIP file.
+
+1. Open the project in your preferred code editor.
+
+1. Launch the index.html file in your browser to run the Seat Booking App locally.
+
+1. Start by adding movie title and price and reserve seats. The app will automatically calculate your cost then book seat for you.
+
+## Tests & Coverage (Codecov)
+
+Here is a dedicated repository that has already configured a workflow for GitHub to test the entire app which tests and uploads coverage to Codecov on every push.
+
+[Link to test repository](https://github.com/ideal0406/cpt-304-group-project-test)
+
+[Link to codecov coverage page](https://app.codecov.io/github/ideal0406/cpt-304-group-project-test/tree/main)
+
+The test repository divides the JS code into two parts: classes and main. It separates the core method logic from the browser's creation and rendering process and conducts separate tests for each. A total of 76 test cases were written, achieving a coverage rate of 98%
+
+
+## Technologies Used
+
+The Seat Booking App was built using the following technologies and tools:
+
+- HTML5
+- CSS3
+- JavaScript
+
+## Credits
+
+The original Seat Booking App tutorial was created by [d-zienke](https://github.com/d-zienke/seat-booking-app).
+
+## Feedback and Support
+
+If you have any questions, suggestions, or issues with the Seat Booking App, feel free to reach out by creating an issue in the [GitHub repository](https://github.com/alpharise21/seat-booking-app/issues). We welcome any feedback to improve the app and make it even more useful for managing personal finances.
+
