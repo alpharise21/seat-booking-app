@@ -3,7 +3,7 @@
 [![codecov](https://codecov.io/github/ideal0406/cpt-304-group-project-test/graph/badge.svg?token=qjBVklgYXo)](https://app.codecov.io/github/ideal0406/cpt-304-group-project-test/tree/main)
 [![Deploy Status](https://img.shields.io/badge/deploy-live-brightgreen?style=flat&logo=render)](https://seat-booking-app-0hle.onrender.com)
 
-This project is for the CPT304 group assignment (Group 70).
+This project is for the CPT304 group assignment (Group 53).
 
 Welcome to the Seat Booking App! This project is based on the Seat Booking App created by the original author Damian Zienke. It has fixed the defects and added many new features. This app has implemented a cinema seat reservation system. You can add or delete movies and ticket prices independently through this app, and select seats on the seating map to make reservations and purchases.
 
